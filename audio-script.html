@@ -47,9 +47,9 @@
             bottom: 0;
         }
         .video-js {
-            width: 90%;
-            height: 30px;
-            border-radius: 10px;
+            width: 100%; /* Full width */
+            height: 50px; /* Match the container */
+            border-radius: 0px;
         }
         .vjs-tech {
             display: none !important;
@@ -57,20 +57,25 @@
         .vjs-control-bar {
             display: flex !important;
             align-items: center;
-            height: 30px;
-            border-radius: 10px;
+            height: 50px;
+            border-radius: 0px;
         }
         .vjs-control-bar > *:not(.vjs-play-control):not(.vjs-current-time):not(.vjs-duration):not(.vjs-progress-control) {
+            display: none !important;
+        }
+        .vjs-big-play-button {
             display: none !important;
         }
     </style>
 </head>
 <body>
+    <div id="loading"></div>
     <div id="iframe-container">
         <iframe id="doc-frame" src="https://docs.google.com/document/d/1EFLS0hqN15PGh5gf2J5h4yTT6EmlnPiSMScyZbX44xk/preview" onload="hideLoading()"></iframe>
     </div>
     <div id="audio-container">
-        <audio id="custom-audio" class="video-js vjs-default-skin" controls preload="auto" data-setup='{"controlBar": {"fullscreenToggle": false, "pictureInPictureToggle": false}}'>
+        <audio id="custom-audio" class="video-js vjs-default-skin" controls preload="auto" 
+               data-setup='{"controlBar": {"fullscreenToggle": false, "pictureInPictureToggle": false}}'>
             <source src="audio.mp3" type="audio/mp3">
         </audio>
     </div>
