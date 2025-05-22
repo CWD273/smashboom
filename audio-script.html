@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen Iframe with Audio</title>
     <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
     <style>
         html, body {
@@ -29,7 +28,7 @@
             flex: 1;
             position: relative;
             width: 100%;
-            height: calc(100% - 30px); /* Leaves space for audio */
+            height: calc(100% - 30px);
         }
         iframe {
             width: 100%;
@@ -78,34 +77,56 @@
             <source src="audio.mp3" type="audio/mp3"> <!-- Audio file from iframe page -->
         </audio>
     </div>
+   <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
+  <script>
+    // Function to show the selected tab
+    function showTab(tabName, button) {
+      const allSections = document.querySelectorAll('section');
+      allSections.forEach(section => section.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
 
-    <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
-    <script>
-        function hideLoading() {
-            document.getElementById("loading").style.display = "none";
-        }
+      const allButtons = document.querySelectorAll('nav button');
+      allButtons.forEach(btn => btn.classList.remove('active'));
+      if (button) {
+        button.classList.add('active');
+      }
+    }
 
-        // Initialize Video.js player
-        var player = videojs('custom-audio');
+    // Function to handle category selection from dropdown
+    function handleSelection() {
+      const dropdown = document.getElementById('categoryDropdown');
+      const selectedValue = dropdown.value;
 
-        // Ensure only one audio plays at a time
-        const audioElements = document.querySelectorAll('audio');
-        audioElements.forEach(audio => {
-            audio.addEventListener('play', () => {
-                audioElements.forEach(otherAudio => {
-                    if (otherAudio !== audio) {
-                        otherAudio.pause();
-                    }
-                });
-            });
-        });
+      // Show the relevant section
+      showTab(selectedValue);
 
-        // Pause audio when the tab is inactive
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                audioElements.forEach(audio => audio.pause());
-            }
-        });
-    </script>
+      // Automatically close dropdown (blur focus)
+      dropdown.blur();
+    }
+
+    // Ensure only one audio plays at a time
+const audioElements = document.querySelectorAll('audio');
+
+audioElements.forEach(audio => {
+  audio.addEventListener('play', () => {
+    audioElements.forEach(otherAudio => {
+      if (otherAudio !== audio) {
+        otherAudio.pause();
+      }
+    });
+  });
+});
+
+// Pause audio when the tab is inactive
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    audioElements.forEach(audio => audio.pause());
+  }
+});
+
+    window.onload = function() {
+      showTab('dynamic');
+    };
+  </script>
 </body>
 </html>
