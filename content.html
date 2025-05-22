@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframe Layout with Smooth Refresh</title>
+    <title>Auto-Refreshing Iframe with Loading GIFs</title>
     <style>
         body, html {
             margin: 0;
@@ -33,56 +33,59 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        .loading {
             position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        /* Make one iframe visible, one hidden */
-        .iframe2-visible {
-            z-index: 2;
-        }
-
-        .iframe2-hidden {
-            z-index: 1;
-            opacity: 0;
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: block; /* Initially visible */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="iframe-container" style="grid-area: bottom-right;">
-            <iframe class="iframe1" src="page1.html"></iframe>
+        <!-- Bottom Right Frame (audio-script.html) -->
+        <div style="grid-area: bottom-right;" class="iframe-container">
+            <img class="loading" src="loading.gif" id="loading1">
+            <iframe id="iframe1" src="audio-script.html" onload="hideLoader('loading1')"></iframe>
         </div>
-        <div class="iframe-container" style="grid-area: top-right;">
-            <!-- Two identical iframes for smooth transition -->
-            <iframe class="iframe2-visible" src="page2.html" id="iframe2A" style="pointer-events: none;"></iframe>
-            <iframe class="iframe2-hidden" src="page2.html" id="iframe2B" style="pointer-events: none;"></iframe>
+
+        <!-- Top Right Frame (Google Spreadsheet, auto-refresh) -->
+        <div style="grid-area: top-right;" class="iframe-container">
+            <img class="loading" src="loading.gif" id="loading2">
+            <iframe id="iframe2" src="https://docs.google.com/spreadsheets/d/1ZPjLDSIcEF1iJ5OYZMj4PG7Lwmd0zBJO3u7Src3md9o/preview" 
+                onload="hideLoader('loading2')" style="pointer-events: none;"></iframe>
         </div>
-        <div class="iframe-container" style="grid-area: left;">
-            <iframe class="iframe3" src="page3.html"></iframe>
+
+        <!-- Left Frame (Google Form) -->
+        <div style="grid-area: left;" class="iframe-container">
+            <img class="loading" src="loading.gif" id="loading3">
+            <iframe id="iframe3" src="https://docs.google.com/forms/d/e/1FAIpQLSes4wsoiaSTZ46arNcImi2ZozMYfhLWA3Tyaml72gbJcDsDcQ/viewform?embedded=true" 
+                onload="hideLoader('loading3')"></iframe>
         </div>
     </div>
 
     <script>
-        function refreshIframe() {
-            const visibleIframe = document.getElementById('iframe2A');
-            const hiddenIframe = document.getElementById('iframe2B');
-
-            // Reload hidden iframe
-            hiddenIframe.src = hiddenIframe.src;
-
-            // Wait 1 second after it loads, then swap visibility
-            setTimeout(() => {
-                visibleIframe.classList.toggle('iframe2-hidden');
-                visibleIframe.classList.toggle('iframe2-visible');
-
-                hiddenIframe.classList.toggle('iframe2-hidden');
-                hiddenIframe.classList.toggle('iframe2-visible');
-            }, 1000);
+        function showLoader(loaderId) {
+            document.getElementById(loaderId).style.display = "block";
         }
 
-        // Refresh every 10 seconds
+        function hideLoader(loaderId) {
+            document.getElementById(loaderId).style.display = "none";
+        }
+
+        function refreshIframe() {
+            const iframe = document.getElementById("iframe2"); // Only refresh top-right iframe
+            showLoader("loading2"); // Show GIF before refreshing
+            iframe.src = iframe.src;
+        }
+
+        // Refresh ONLY the top-right iframe every 10 seconds
         setInterval(refreshIframe, 10000);
     </script>
 </body>
