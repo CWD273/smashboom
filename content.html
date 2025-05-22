@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframe Layout with Loading GIF</title>
+    <title>Iframe Layout with Smooth Refresh</title>
     <style>
         body, html {
             margin: 0;
@@ -38,37 +38,52 @@
             left: 0;
         }
 
-        .loading {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        /* Make one iframe visible, one hidden */
+        .iframe2-visible {
+            z-index: 2;
+        }
+
+        .iframe2-hidden {
             z-index: 1;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="iframe-container" style="grid-area: bottom-right;">
-            <img class="loading" src="loading.gif" id="loading1">
-            <iframe class="iframe1" src="audio-script.html" onload="hideLoader('loading1')"></iframe>
+            <iframe class="iframe1" src="page1.html"></iframe>
         </div>
         <div class="iframe-container" style="grid-area: top-right;">
-            <img class="loading" src="loading.gif" id="loading2">
-            <iframe class="iframe2" src="https://docs.google.com/spreadsheets/d/1ZPjLDSIcEF1iJ5OYZMj4PG7Lwmd0zBJO3u7Src3md9o/preview" onload="hideLoader('loading2')" style="pointer-events: none;"></iframe>
+            <!-- Two identical iframes for smooth transition -->
+            <iframe class="iframe2-visible" src="page2.html" id="iframe2A" style="pointer-events: none;"></iframe>
+            <iframe class="iframe2-hidden" src="page2.html" id="iframe2B" style="pointer-events: none;"></iframe>
         </div>
         <div class="iframe-container" style="grid-area: left;">
-            <img class="loading" src="loading.gif" id="loading3">
-            <iframe class="iframe3" src="https://docs.google.com/forms/d/e/1FAIpQLSes4wsoiaSTZ46arNcImi2ZozMYfhLWA3Tyaml72gbJcDsDcQ/viewform?embedded=true" onload="hideLoader('loading3')"></iframe>
+            <iframe class="iframe3" src="page3.html"></iframe>
         </div>
     </div>
 
     <script>
-        function hideLoader(loaderId) {
-            document.getElementById(loaderId).style.display = 'none';
+        function refreshIframe() {
+            const visibleIframe = document.getElementById('iframe2A');
+            const hiddenIframe = document.getElementById('iframe2B');
+
+            // Reload hidden iframe
+            hiddenIframe.src = hiddenIframe.src;
+
+            // Wait 1 second after it loads, then swap visibility
+            setTimeout(() => {
+                visibleIframe.classList.toggle('iframe2-hidden');
+                visibleIframe.classList.toggle('iframe2-visible');
+
+                hiddenIframe.classList.toggle('iframe2-hidden');
+                hiddenIframe.classList.toggle('iframe2-visible');
+            }, 1000);
         }
+
+        // Refresh every 10 seconds
+        setInterval(refreshIframe, 10000);
     </script>
 </body>
 </html>
